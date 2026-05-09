@@ -6,11 +6,18 @@ global.sumo_player_id_counter += 1;
 sumo_slot = global.sumo_player_id_counter;
 
 sprite_index = spr_player_idle;
-var sw = sprite_get_width(sprite_index);
-var sh = sprite_get_height(sprite_index);
-sprite_set_offset(sprite_index, sw / 2, sh / 2);
+
+// Strip sprites are one texture (e.g. 256×64 = 4×64 cells); origin is per-cell center.
+anim_cell_size = 64;
+sprite_set_offset(spr_player_idle, anim_cell_size / 2, anim_cell_size / 2);
+sprite_set_offset(spr_player_walk, anim_cell_size / 2, anim_cell_size / 2);
+sprite_set_offset(spr_player_shove, anim_cell_size / 2, anim_cell_size / 2);
+sprite_set_offset(spr_player_fall, anim_cell_size / 2, anim_cell_size / 2);
+sprite_set_offset(spr_player_win, anim_cell_size / 2, anim_cell_size / 2);
 
 // --- Animation state ---
+anim_index = 0;
+prev_anim_sprite = spr_player_idle;
 is_moving = false;
 is_shoving = false;
 is_winning = false;

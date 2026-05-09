@@ -21,6 +21,8 @@ with (obj_player) {
   is_dead = false;
   is_winning = false;
   is_shoving = false;
+  anim_index = 0;
+  prev_anim_sprite = spr_player_idle;
   spawn_timer = 60;
   hit_pulse_timer = 0;
   shove_hit_flash = 0;

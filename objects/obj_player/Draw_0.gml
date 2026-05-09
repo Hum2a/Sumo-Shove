@@ -26,7 +26,22 @@ if (shove_hit_flash > 0) {
 image_xscale = sc;
 image_yscale = sc;
 image_angle = face_angle + sprite_face_angle_offset;
-draw_self();
+
+// One frame from horizontal strip (sprite width = cells × anim_cell_size; single subimage)
+var cell = anim_cell_size;
+var spr = sprite_index;
+var nf = max(1, sprite_get_width(spr) div cell);
+var fi = floor(anim_index) mod nf;
+if (is_shoving && sprite_index == spr_player_shove) {
+  fi = clamp(floor(anim_index), 0, nf - 1);
+}
+var sx = fi * cell;
+
+var _mat = matrix_build(x, y, 0, 0, 0, image_angle, image_xscale, image_yscale, 1);
+matrix_set(matrix_world, _mat);
+draw_sprite_part_ext(spr, 0, sx, 0, cell, cell, -cell * 0.5, -cell * 0.5, 1, 1, image_blend, draw_get_alpha());
+matrix_set(matrix_world, matrix_build_identity());
+
 image_angle = 0;
 image_xscale = 1;
 image_yscale = 1;

@@ -142,13 +142,39 @@ if (is_dead) {
 } else if (is_shoving) {
   sprite_index = spr_player_shove;
   image_speed = anim_spd_shove;
-  if (image_index >= sprite_get_number(spr_player_shove) - 1) {
-    is_shoving = false;
-  }
 } else if (is_moving) {
   sprite_index = spr_player_walk;
   image_speed = anim_spd_walk;
 } else {
   sprite_index = spr_player_idle;
   image_speed = anim_spd_idle;
+}
+
+// Horizontal strip playback (sprites are one subimage = full strip texture)
+if (sprite_index != prev_anim_sprite) {
+  anim_index = 0;
+  prev_anim_sprite = sprite_index;
+}
+
+var _nf = max(1, sprite_get_width(sprite_index) div anim_cell_size);
+
+if (is_shoving && sprite_index == spr_player_shove) {
+  anim_index += image_speed;
+  if (anim_index >= _nf) {
+    is_shoving = false;
+    anim_index = 0;
+    if (is_moving) {
+      sprite_index = spr_player_walk;
+      image_speed = anim_spd_walk;
+    } else {
+      sprite_index = spr_player_idle;
+      image_speed = anim_spd_idle;
+    }
+    prev_anim_sprite = sprite_index;
+  }
+} else {
+  anim_index += image_speed;
+  while (anim_index >= _nf) {
+    anim_index -= _nf;
+  }
 }
