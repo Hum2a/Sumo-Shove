@@ -3,6 +3,9 @@ if (p1_score >= wins_needed || p2_score >= wins_needed) {
   global.p1_final_score = p1_score;
   global.p2_final_score = p2_score;
   global.series_winner = (p1_score >= wins_needed) ? 1 : 2;
+  with (obj_player) {
+    is_winning = (sumo_slot == global.series_winner);
+  }
   room_goto(room_score);
   exit;
 }
@@ -16,6 +19,8 @@ with (obj_player) {
   spd_x = 0;
   spd_y = 0;
   is_dead = false;
+  is_winning = false;
+  is_shoving = false;
   spawn_timer = 60;
   hit_pulse_timer = 0;
   shove_hit_flash = 0;

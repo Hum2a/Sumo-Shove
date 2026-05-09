@@ -5,13 +5,24 @@ if (!variable_global_exists("sumo_player_id_counter")) {
 global.sumo_player_id_counter += 1;
 sumo_slot = global.sumo_player_id_counter;
 
-// Center sprite on (x, y) — spr_player uses top-left origin in the asset
+sprite_index = spr_player_idle;
 var sw = sprite_get_width(sprite_index);
 var sh = sprite_get_height(sprite_index);
 sprite_set_offset(sprite_index, sw / 2, sh / 2);
 
+// --- Animation state ---
+is_moving = false;
+is_shoving = false;
+is_winning = false;
+anim_spd_idle = 0.1;
+anim_spd_walk = 0.2;
+anim_spd_shove = 0.3;
+anim_spd_fall = 0.2;
+anim_spd_win = 0.15;
+
 // --- Circular body (solid overlap resolution in obj_game_manager End Step) ---
-collision_radius = 22;
+// Tuned for 64x64 spr_player (texture was resized to match asset bounds).
+collision_radius = 15;
 
 // --- Movement (Stage A tuning — tweak for GX feel) ---
 spd_x = 0;
@@ -20,8 +31,10 @@ move_force = 0.62;
 friction_amount = 0.83;
 max_speed = 5;
 
-// --- Facing (degrees; used for shove direction and labels) ---
+// --- Facing (degrees; used for shove direction + draw rotation) ---
 face_angle = 0;
+// fat_sumo art faces toward +y ("down" on screen) at image_angle 0; align rotation to movement direction
+sprite_face_angle_offset = -90;
 
 // --- Shove (cooldown, hit range, self-lunge and knockback) ---
 shove_cooldown = 0;
@@ -45,3 +58,5 @@ trail_phase = 0;
 // --- Juice (Stages B/C): knockback receive pulse / shove snap ---
 hit_pulse_timer = 0;
 shove_hit_flash = 0;
+
+image_speed = anim_spd_idle;

@@ -25,7 +25,9 @@ if (shove_hit_flash > 0) {
 
 image_xscale = sc;
 image_yscale = sc;
+image_angle = face_angle + sprite_face_angle_offset;
 draw_self();
+image_angle = 0;
 image_xscale = 1;
 image_yscale = 1;
 

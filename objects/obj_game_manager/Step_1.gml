@@ -10,6 +10,8 @@ with (obj_player) {
   spd_x = 0;
   spd_y = 0;
   is_dead = false;
+  is_shoving = false;
+  is_winning = false;
   spawn_timer = 60;
   hit_pulse_timer = 0;
   shove_hit_flash = 0;
