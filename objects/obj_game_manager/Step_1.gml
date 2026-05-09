@@ -14,9 +14,11 @@ with (obj_player) {
   is_winning = false;
   anim_index = 0;
   prev_anim_sprite = spr_player_idle;
+  shove_charge = 0;
   spawn_timer = 60;
   hit_pulse_timer = 0;
   shove_hit_flash = 0;
+  shove_cooldown = 0;
 }
 
 if (!controls_intro_done) {

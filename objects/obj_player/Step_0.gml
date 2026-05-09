@@ -39,18 +39,19 @@ if (playing && !is_dead) {
   var key_down;
   var key_shove;
 
+  var key_shove_hold;
   if (sumo_slot == 1) {
     key_left = keyboard_check(ord("A"));
     key_right = keyboard_check(ord("D"));
     key_up = keyboard_check(ord("W"));
     key_down = keyboard_check(ord("S"));
-    key_shove = keyboard_check_pressed(ord("F"));
+    key_shove_hold = keyboard_check(ord("F"));
   } else {
     key_left = keyboard_check(vk_left);
     key_right = keyboard_check(vk_right);
     key_up = keyboard_check(vk_up);
     key_down = keyboard_check(vk_down);
-    key_shove = keyboard_check_pressed(ord("L"));
+    key_shove_hold = keyboard_check(ord("L"));
   }
 
   var input_x = key_right - key_left;
@@ -61,52 +62,70 @@ if (playing && !is_dead) {
     face_angle = point_direction(0, 0, input_x, input_y);
   }
 
-  // --- SHOVE ---
-  if (key_shove && shove_cooldown == 0) {
-    shove_cooldown = shove_cooldown_max;
-    is_shoving = true;
+  // --- SHOVE CHARGE (release fires; charging slows acceleration) ---
+  if (shove_cooldown > 0) {
+    shove_charge = 0;
+  } else if (key_shove_hold) {
+    shove_charge = min(1, shove_charge + shove_charge_rate);
+  } else {
+    if (shove_charge >= shove_charge_min) {
+      var _pow = clamp(shove_charge, 0, 1);
+      var _pow_lin = shove_power_min_mult + (shove_power_max_mult - shove_power_min_mult) * _pow;
+      var _pow_kb = power(_pow, shove_knockback_charge_curve);
+      var _kb_mult = shove_knockback_min_mult + (shove_knockback_max_mult - shove_knockback_min_mult) * _pow_kb;
+      var _eff_sf = shove_force * _pow_lin;
+      var _eff_kb = knockback_force * _kb_mult;
 
-    spd_x += lengthdir_x(shove_force, face_angle);
-    spd_y += lengthdir_y(shove_force, face_angle);
+      shove_cooldown = shove_cooldown_max;
+      is_shoving = true;
 
-    var opponent = noone;
-    var best_d = 999999;
-    with (obj_player) {
-      if (id != other.id) {
-        var d = point_distance(x, y, other.x, other.y);
-        if (d < best_d) {
-          best_d = d;
-          opponent = id;
+      spd_x += lengthdir_x(_eff_sf, face_angle);
+      spd_y += lengthdir_y(_eff_sf, face_angle);
+
+      var opponent = noone;
+      var best_d = 999999;
+      with (obj_player) {
+        if (id != other.id) {
+          var d = point_distance(x, y, other.x, other.y);
+          if (d < best_d) {
+            best_d = d;
+            opponent = id;
+          }
         }
       }
-    }
 
-    if (opponent != noone) {
-      var dist_o = point_distance(x, y, opponent.x, opponent.y);
-      var toward_opp = point_direction(x, y, opponent.x, opponent.y);
-      var in_arc = abs(angle_difference(face_angle, toward_opp)) <= shove_cone_half;
-      if (dist_o <= shove_range && in_arc) {
-        opponent.spd_x += lengthdir_x(knockback_force, face_angle);
-        opponent.spd_y += lengthdir_y(knockback_force, face_angle);
-        opponent.hit_pulse_timer = 14;
-        shove_hit_flash = 10;
+      if (opponent != noone) {
+        var dist_o = point_distance(x, y, opponent.x, opponent.y);
+        var toward_opp = point_direction(x, y, opponent.x, opponent.y);
+        var in_arc = abs(angle_difference(face_angle, toward_opp)) <= shove_cone_half;
+        if (dist_o <= shove_range && in_arc) {
+          opponent.spd_x += lengthdir_x(_eff_kb, face_angle);
+          opponent.spd_y += lengthdir_y(_eff_kb, face_angle);
+          opponent.hit_pulse_timer = 14;
+          shove_hit_flash = 10;
 
-        with (obj_game_manager) {
-          trigger_shake(5, 10);
-          sfx_try("snd_sumo_shove_hit");
+          with (obj_game_manager) {
+            trigger_shake(2 + 11 * _pow_kb, 6 + 18 * _pow_kb);
+            sfx_try("snd_sumo_shove_hit");
+          }
         }
       }
-    }
 
-    instance_create_layer(x, y, "Instances", obj_shove_effect);
+      instance_create_layer(x, y, "Instances", obj_shove_effect);
+    }
+    shove_charge = 0;
   }
 
-  spd_x += input_x * move_force;
-  spd_y += input_y * move_force;
+  var _charge_slow = shove_charge * shove_charge_slow_max;
+  var _move_mult = clamp(1 - _charge_slow, 0.22, 1);
 
+  spd_x += input_x * move_force * _move_mult;
+  spd_y += input_y * move_force * _move_mult;
+
+  var _cap = max_speed * clamp(1 - shove_charge * 0.38, 0.55, 1);
   var vmag = point_distance(0, 0, spd_x, spd_y);
-  if (vmag > max_speed) {
-    var s = max_speed / vmag;
+  if (vmag > _cap) {
+    var s = _cap / vmag;
     spd_x *= s;
     spd_y *= s;
   }

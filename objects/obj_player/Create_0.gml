@@ -53,6 +53,20 @@ shove_range = 64;
 shove_cone_half = 52;
 shove_duration = 8;
 
+// --- Shove charge (hold shove key; release to attack — scales power, slows movement while charging) ---
+shove_charge = 0;
+shove_charge_rate = 0.018;
+shove_charge_min = 0.012;
+// Lunge strength: tap is weak, full charge is a big burst
+shove_power_min_mult = 0.52;
+shove_power_max_mult = 2.65;
+// Knockback: separate ramp — min tap vs full charge should feel obviously different
+shove_knockback_min_mult = 0.55;
+shove_knockback_max_mult = 5.25;
+// Curve on knockback only (>1 = low charge weaker, high charge spikes harder; still uses charge %)
+shove_knockback_charge_curve = 1.45;
+shove_charge_slow_max = 0.58;
+
 // --- State (dead players ignore input after falling off) ---
 is_dead = false;
 
