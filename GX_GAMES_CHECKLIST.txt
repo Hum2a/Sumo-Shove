@@ -1,0 +1,59 @@
+Sumo Shove — GX.games (Opera GX) prep checklist
+Tick items off as you complete them in GameMaker.
+
+1. Game identity
+   [ ] Open Game Options > Opera GX (GX.games).
+   [ ] Set Game name / internal project name to something store-ready (e.g. "Sumo Shove").
+   [ ] Set Display name (what players see on GX.games) to match your branding.
+   [ ] Fill Team id / Team name if you publish under a studio account (required for uploads once linked).
+
+2. Versioning
+   [ ] Use a clear version scheme in Opera GX options (e.g. 1.0.0.0 for first release).
+   [ ] Bump "next version" when uploading a new build so GX.games can tell builds apart.
+   [ ] Keep Release notes / changelog in your own notes (GX upload flow may prompt for what changed).
+
+3. Resolution and canvas
+   [ ] Match your room size (this project uses 1366 x 768) or decide a fixed base resolution and scale mode.
+   [ ] In Opera GX options, set Scale mode appropriately (0 = linear scaling in current template — verify in IDE).
+   [ ] Confirm aspect ratio intent (16:9-friendly sizes reduce letterboxing on Opera GX).
+
+4. Pixel art / filtering
+   [ ] Decide Interpolate pixels (Opera GX): ON for smooth edges, OFF for crisp pixel art.
+   [ ] Texture page size (e.g. 2048x2048) is set — raise only if you need larger atlases (watch file size).
+
+5. Cursor and presentation
+   [ ] option_operagx_display_cursor: enable if you need OS cursor for menus; disable for custom cursor games.
+
+6. GX.games-specific
+   [ ] Transparent background: usually OFF unless you rely on see-through canvas (rare for full-screen games).
+   [ ] Ensure game_name / guid fields are not conflicting with an older upload if you reuse project names.
+
+7. Upload flow inside GameMaker
+   [ ] Sign in to your YoYo Account / Opera publisher identity from the IDE if prompted.
+   [ ] Use the GX.games / Opera GX target to Create Executable / Upload (wording varies by IDE version).
+   [ ] Pick the correct Opera GX game slot or create a new listing when uploading.
+   [ ] Wait for processing; fix compile errors locally before re-uploading.
+
+8. File size
+   [ ] Keep the final Opera GX package under the GX.games upload limit (commonly 200 MB — if your zip exceeds it, compress audio/textures and remove unused assets).
+
+9. Smoke test before publish
+   [ ] Keyboard-only controls work in the browser build (Sumo Shove is local 2-player keyboard).
+   [ ] Full-screen / scaling looks acceptable at common browser sizes.
+
+10. Legal / store readiness (outside Game Options but easy to forget)
+   [ ] Credits, licence for fonts/audio (if any).
+   [ ] Privacy: GX.games listing text matches what the game actually does (no analytics unless disclosed).
+
+11. Post-build UX (Stages A–C — verify in Opera GX export)
+   [ ] Title card shows controls; SPACE/ENTER starts countdown.
+   [ ] ESC pauses mid-round; ESC resumes.
+   [ ] Simultaneous ring-out shows DOUBLE KO and replay with no score change.
+   [ ] Test browser click-to-focus if keyboard does nothing (focus on game canvas).
+
+12. Audio hooks (optional sounds — see AUDIO_ASSETS.txt)
+   [ ] Either import sounds with listed names, or accept silent cues until you add them.
+
+13. Store listing prep (see LISTING_AND_QA.txt)
+   [ ] Paste description + bullet controls into GX.games listing.
+   [ ] Capture screenshots / short trailer after a polished build.

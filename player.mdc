@@ -1,0 +1,95 @@
+---
+description: Rules for obj_player — apply when editing player object files
+globs: objects/obj_player/**
+---
+
+# obj_player Rules
+
+## Overview
+There are exactly 2 instances of obj_player in room_game. They are identical in code — the only difference is `sumo_slot` (1 or 2), assigned in Create via `global.sumo_player_id_counter` (reset on `obj_platform` Create; room instance order must list players after the platform).
+
+## Create event variables
+Every variable used in Step must be declared here with a sensible default:
+```gml
+sumo_slot = 1;         // From counter in Create (not room editor override)
+
+// Movement
+spd_x = 0;
+spd_y = 0;
+move_force = 0.6;
+friction_amount = 0.82;
+max_speed = 5;
+
+// Facing
+face_angle = 0;        // Degrees, updated when moving
+
+// Shove
+shove_cooldown = 0;
+shove_cooldown_max = 45;   // frames (0.75s at 60fps)
+shove_force = 12;          // Self-lunge on shove
+knockback_force = 16;      // Force applied to opponent
+shove_range = 64;          // Pixels — how close opponent must be for hit to land
+shove_duration = 8;        // Frames the lunge velocity applies
+
+// State
+is_dead = false;       // True after falling off, prevents further input
+```
+
+## Input mapping
+Determine keys based on `sumo_slot` — do NOT hardcode per-player objects:
+```gml
+// In Step, resolve input:
+var key_left, key_right, key_up, key_down, key_shove;
+if (sumo_slot == 1) {
+    key_left  = keyboard_check(ord("A"));
+    key_right = keyboard_check(ord("D"));
+    key_up    = keyboard_check(ord("W"));
+    key_down  = keyboard_check(ord("S"));
+    key_shove = keyboard_check_pressed(ord("F"));
+} else {
+    key_left  = keyboard_check(vk_left);
+    key_right = keyboard_check(vk_right);
+    key_up    = keyboard_check(vk_up);
+    key_down  = keyboard_check(vk_down);
+    key_shove = keyboard_check_pressed(ord("L"));
+}
+```
+
+## Shove logic
+When `key_shove` is pressed AND `shove_cooldown == 0` AND `is_dead == false`:
+1. Set `shove_cooldown = shove_cooldown_max`
+2. Apply self-lunge: add `lengthdir_x/y(shove_force, face_angle)` to spd_x/spd_y
+3. Find the opponent: `var opponent = instance_nearest(x, y, obj_player);`
+4. Check range: `if (point_distance(x, y, opponent.x, opponent.y) <= shove_range)`
+5. If in range: apply knockback to opponent in `face_angle` direction
+6. Create a shove effect: `instance_create_layer(x, y, "Instances", obj_shove_effect)`
+
+## Out-of-bounds
+At the END of the Step event, after moving:
+```gml
+var dist = point_distance(x, y, global.platform_cx, global.platform_cy);
+if (dist > global.platform_radius && !is_dead) {
+    is_dead = true;
+    with (obj_game_manager) { player_fell(other.sumo_slot); }
+}
+```
+
+## Draw event
+Keep it minimal — just draw the sprite. Add a colored indicator above the player:
+```gml
+draw_self(); // draws the sprite normally
+
+// Draw player label above
+draw_set_color(sumo_slot == 1 ? c_blue : c_red);
+draw_set_halign(fa_center);
+draw_set_valign(fa_bottom);
+draw_text(x, y - 24, "P" + string(sumo_slot));
+```
+
+## Reset
+When `obj_game_manager` resets a round, it should:
+- Set `x`, `y` back to start positions
+- Set `spd_x = 0`, `spd_y = 0`
+- Set `is_dead = false`
+
+The game manager does this directly using `with(obj_player)` — obj_player does not need a reset function.

@@ -1,0 +1,126 @@
+---
+description: Core GML rules — apply to every file in this project
+globs: **/*.gml, **/*.yy, **/*.yyp
+---
+
+# Sumo Shove — GameMaker Language (GML) Rules
+
+## What this project is
+A 2-player local party game built in GameMaker. Two players share one keyboard and try to shove each other off a circular platform. Best of 5 rounds, with a score screen and rematch flow.
+
+## Language
+All logic is written in **GML (GameMaker Language)**. It is NOT JavaScript, C#, or Python — do not use syntax from those languages.
+
+### GML basics
+- Variables are declared with `var` for local scope, or bare assignment for instance scope
+- No `let`, `const`, `function` keywords — use `var` and `function_name()` 
+- String concatenation uses `+` or `string()` to cast numbers: `"Score: " + string(score)`
+- Boolean: `true` / `false`
+- Conditionals: `if () {} else {}`
+- Loops: `for`, `while`, `repeat`
+- Arrays are 0-indexed: `arr[0]`
+- `self` refers to the current instance
+- `other` refers to the other instance in a collision event
+
+### Built-in variables (do NOT redeclare these)
+- `x`, `y` — instance position
+- `speed`, `direction` — built-in motion (we avoid these, use manual velocity instead)
+- `image_angle` — sprite rotation in degrees
+- `sprite_index` — current sprite
+- `alarm[0..11]` — timer events
+
+### Key built-in functions
+- `point_distance(x1, y1, x2, y2)` — distance between two points
+- `point_direction(x1, y1, x2, y2)` — angle between two points in degrees
+- `lengthdir_x(len, dir)` / `lengthdir_y(len, dir)` — vector from angle
+- `keyboard_check(key)` — held down
+- `keyboard_check_pressed(key)` — single frame press
+- `instance_nearest(x, y, obj)` — find nearest instance of object
+- `draw_circle(x, y, radius, outline)` — draw a circle
+- `draw_text(x, y, string)` — draw text
+- `draw_set_color(color)` — set draw color
+- `room_goto(room)` — switch rooms
+- `game_restart()` — restart
+
+### Key constants
+- `vk_left`, `vk_right`, `vk_up`, `vk_down` — arrow keys
+- `vk_space`, `vk_enter`, `vk_escape`
+- `ord("A")` — keyboard constant for letter keys (must be uppercase)
+- `c_white`, `c_black`, `c_red`, `c_blue`, `c_yellow` — color constants
+- `fa_center`, `fa_left`, `fa_right` — horizontal text alignment
+- `fa_middle`, `fa_top`, `fa_bottom` — vertical text alignment
+
+## Project architecture
+
+### Objects
+| Object | Purpose |
+|---|---|
+| `obj_player` | Player character — movement, shoving, facing direction |
+| `obj_platform` | The circular arena — draws the platform, detects out-of-bounds |
+| `obj_game_manager` | Persistent singleton — tracks scores, round state, controls game flow |
+| `obj_shove_effect` | Short-lived visual burst effect when shove fires |
+
+### Rooms
+| Room | Purpose |
+|---|---|
+| `room_game` | The main arena — contains platform, both players, game manager |
+| `room_score` | Post-series score/winner screen with rematch button |
+
+### Global variables (set on obj_game_manager)
+```gml
+p1_score   // Player 1 round wins
+p2_score   // Player 2 round wins
+round_num  // Current round (1–5)
+max_rounds // Always 5
+```
+
+## Coding conventions
+- Use `spd_x` / `spd_y` for manual velocity (NOT built-in `speed`/`direction`)
+- All magic numbers go in Create event as named variables, not hardcoded in Step
+- Comments on every logical block
+- No logic in Draw events — Draw is for rendering only
+- Collision/boundary checks in Step event of `obj_player`
+- Game state changes only through `obj_game_manager`
+
+## Player slots
+- `player_id` is **readonly** in current runtimes — use instance var **`sumo_slot`** (1 or 2)
+- `sumo_slot = 1` → WASD + F to shove
+- `sumo_slot = 2` → Arrow keys + L to shove
+- Assigned in `obj_player` Create (see `global.sumo_player_id_counter` / room order)
+
+## Physics approach
+We use manual velocity with friction — do NOT use GameMaker's built-in physics engine.
+```gml
+// Pattern for all movement
+spd_x += input_x * move_force;
+spd_y += input_y * move_force;
+spd_x *= friction_amount; // e.g. 0.85
+spd_y *= friction_amount;
+x += spd_x;
+y += spd_y;
+```
+
+## Shove mechanic
+- Shove fires a velocity burst in `image_angle` direction
+- Cooldown tracked with `shove_cooldown` counter (counts down in Step)
+- On press: check if opponent is within `shove_range`, apply knockback to them
+- Also applies a small self-lunge so missed shoves have risk/reward
+- Knockback vector: `lengthdir_x/y(knockback_force, image_angle)`
+
+## Out-of-bounds detection
+Checked in `obj_player` Step event:
+```gml
+var dist = point_distance(x, y, platform_cx, platform_cy);
+if (dist > platform_radius) {
+    // This player fell off — tell game manager
+    with (obj_game_manager) { player_fell(other.sumo_slot); }
+}
+```
+`platform_cx`, `platform_cy`, `platform_radius` are global vars set by `obj_platform` on Create.
+
+## What NOT to do
+- Do not use `speed` or `direction` built-ins for player movement
+- Do not put gameplay logic in Draw events
+- Do not hardcode `sumo_slot` in obj_player — assign in Create from the counter / room order
+- Do not use `instance_create_layer` without specifying the correct layer name
+- Do not use JavaScript syntax (no `const`, `let`, `=>`, `===`)

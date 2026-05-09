@@ -1,0 +1,59 @@
+---
+description: Rules for obj_game_manager — only apply when editing game manager files
+globs: objects/obj_game_manager/**
+---
+
+# obj_game_manager Rules
+
+## Role
+The single source of truth for game state. There must only ever be ONE instance of this object in the game. It persists across rounds (do not destroy it between rounds — reset player positions instead).
+
+## State machine
+The game manager runs a simple state machine via a `game_state` variable:
+
+```
+"playing"  → round is active, players can move and shove
+"round_end" → brief pause after someone falls, show who won the round
+"series_end" → someone won 3 rounds, go to score screen
+```
+
+Only transition states through the `player_fell(pid)` function.
+
+## Functions to implement
+
+### `player_fell(pid)`
+Called by obj_player when they go out of bounds.
+- If `game_state != "playing"` → return early (ignore duplicate calls)
+- Set `game_state = "round_end"`
+- Award point to the OTHER player (pid is who fell, not who won)
+- Start an alarm for the round-end pause (e.g. alarm[0] = 180 — 3 seconds at 60fps)
+
+### `reset_round()`
+Called by alarm[0] after round-end pause:
+- Check if either player has 3 wins → if so, set `game_state = "series_end"` and go to room_score
+- Otherwise increment round_num, reposition both players to start positions, set `game_state = "playing"`
+
+### `get_winner()`
+Returns 1 or 2 — which player won the series. Used by room_score.
+
+## Start positions
+```gml
+p1_start_x = 300;  // Adjust to your room layout
+p1_start_y = 400;
+p2_start_x = 500;
+p2_start_y = 400;
+```
+
+## Drawing the HUD
+In the Draw GUI event (not Draw event), render:
+- Round number: "Round X / 5" at top center
+- P1 score (left side), P2 score (right side) — show as filled circles/pips
+- During "round_end" state: show "Player X wins the round!" text
+
+## Persistence
+Use `global.` variables if you need score to survive a `room_goto()` to room_score:
+```gml
+global.p1_score = p1_score;
+global.p2_score = p2_score;
+global.series_winner = get_winner();
+```

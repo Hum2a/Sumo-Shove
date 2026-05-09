@@ -1,0 +1,59 @@
+Sumo Shove — listing copy + QA matrix (Stages E & QA)
+
+=== SHORT DESCRIPTION (GX.games / store short field) ===
+Local 2-player keyboard party game: shove your rival off the disk. Fast rounds,
+best-of-five series, instant rematch.
+
+=== LONGER DESCRIPTION (adapt for listing body) ===
+Sumo Shove is a quick couch-competitive game for two players on one keyboard.
+Dash around a circular arena, time your shoves, and knock the other player past
+the edge. Win rounds to fill your score pips; first to three round wins takes
+the series. Includes countdown starts, pause (ESC), and rematch from the
+results screen.
+
+Controls:
+• Player 1 — Move: WASD   Shove: F
+• Player 2 — Move: Arrow keys   Shove: L
+• Pause — ESC (during a round)
+
+No online multiplayer — shared-keyboard only. Click the game window once if
+keys don’t respond in the browser.
+
+=== FEATURE BULLETS ===
+- Two-player local competitive gameplay on one keyboard
+- Circular arena with knockback shoves and round-by-round scoring
+- Best-of-five series with on-screen score pips
+- Title card with controls; countdown before each round
+- Pause menu (ESC)
+
+=== QA MATRIX — run each cell before calling build “final” ===
+
+Flow & modes
+[ ] Cold run (F5): title card → SPACE → countdown → playable round.
+[ ] Finish series (3 wins): score screen → ENTER rematch → title/countdown again.
+[ ] ESC pauses in-round; ESC resumes; players frozen while paused.
+[ ] ESC during title card does nothing harmful (or ignores pause).
+
+Gameplay & fairness
+[ ] Movement + shove inputs correct per player (WASD/F vs Arrows/L).
+[ ] Falling off disk awards round to the other player; HUD pip updates.
+[ ] Force rare double ring-out: both past edge same moment → DOUBLE KO,
+    same round number, no pip awarded, countdown restarts.
+
+Presentation
+[ ] HUD shows Round X / 5 and “First to 3 wins the series”.
+[ ] Countdown 3-2-1 visible; round begins after GO phase (playing state).
+[ ] Round-end banner shows correct winner number.
+
+GX.web specifics
+[ ] Opera GX / HTML5 build: window scales legibly (readable HUD).
+[ ] Keyboard works after clicking canvas if browser steals focus.
+[ ] Refresh mid-match behavior acceptable (full restart is OK for v1).
+
+Audio (optional)
+[ ] With sounds imported (AUDIO_ASSETS.txt): cues fire without errors.
+[ ] With NO sounds: game stays silent with no runtime errors.
+
+Regression
+[ ] Trail particles when moving fast (optional FX still runs).
+[ ] Screen shake on landed shove hit still reasonable after tuning.

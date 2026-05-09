@@ -1,0 +1,28 @@
+Sumo Shove — launch & iteration (Stage F)
+
+AFTER FIRST UPLOAD
+- Playtest from the real GX.games link (not only F5 in IDE): latency,
+  scaling, and keyboard focus differ from desktop.
+- Grab 3–5 screenshots from that build for the store listing.
+
+VERSIONING
+- Use semver-style bumps in Opera GX options (e.g. 1.0.1 for balance-only).
+- Keep a one-line changelog per upload (“Louder hit sfx”, “Round pause shorter”).
+
+WHAT TO PATCH FIRST (typical order)
+1. Feel — move_force, knockback_force, friction, round_end_delay (player +
+   obj_game_manager Create).
+2. Clarity — HUD copy only (Draw GUI event), no logic changes.
+3. Audio — drop files in IDE matching AUDIO_ASSETS.txt names.
+4. Size — compress WAV/OGG, shrink texture pages if upload near limit.
+
+WHAT TO DEFER TO 1.1+
+- Online multiplayer, AI opponent, gamepads, extra arenas (scope creep).
+
+COMMUNITY / FEEDBACK
+- Ask testers: “Too floaty? Too stompy?” — tune knockback first, then accel.
+
+WHEN SOMETHING BREAKS ON WEB ONLY
+- Check keyboard focus (canvas click).
+- Check browser console for texture/audio load errors.
+- Re-export Opera GX after changing options or adding assets.

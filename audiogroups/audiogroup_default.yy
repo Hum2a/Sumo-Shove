@@ -1,0 +1,11 @@
+{
+  "$GMAudioGroup":"v1",
+  "%Name":"audiogroup_default",
+  "exportDir":"",
+  "name":"audiogroup_default",
+  "resourceType":"GMAudioGroup",
+  "resourceVersion":"2.0",
+  "tags":[],
+  "targets":-1,
+  "type":0,
+}

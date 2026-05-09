@@ -1,0 +1,17 @@
+Sumo Shove — audio assets (Stage B)
+
+These Sound resources are IN THE PROJECT under sounds/snd_* with placeholder WAV beeps (replace for ship).
+sfx_try() resolves them by resource name — names must stay exactly as below.
+
+snd_sumo_ui_confirm    — Space/Enter on title card; unpause confirm (optional reuse)
+snd_sumo_pause         — Opening pause menu
+snd_sumo_tick          — Countdown 3…2…1 beep
+snd_sumo_round_start   — Fight begins after GO
+snd_sumo_shove_hit     — Shove connects with opponent in range
+snd_sumo_fall          — Player leaves the disk (after a round loss)
+snd_sumo_round_win     — Round awarded to someone (after player_fell)
+snd_sumo_double_ko     — Both ring out same frame (replay, no score)
+
+Tips for GX.games / web:
+- Keep clips short (< 1 s where possible), normalized volume
+- Prefer compressed format recommended by GameMaker for HTML5/Opera GX target
