@@ -10,6 +10,9 @@ var sw = sprite_get_width(sprite_index);
 var sh = sprite_get_height(sprite_index);
 sprite_set_offset(sprite_index, sw / 2, sh / 2);
 
+// --- Circular body (solid overlap resolution in obj_game_manager End Step) ---
+collision_radius = 22;
+
 // --- Movement (Stage A tuning — tweak for GX feel) ---
 spd_x = 0;
 spd_y = 0;
@@ -26,6 +29,8 @@ shove_cooldown_max = 45;
 shove_force = 12;
 knockback_force = 15;
 shove_range = 64;
+// Half-angle (degrees): opponent must be in front of face_angle within this cone
+shove_cone_half = 52;
 shove_duration = 8;
 
 // --- State (dead players ignore input after falling off) ---

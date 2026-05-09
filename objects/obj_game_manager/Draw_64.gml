@@ -111,16 +111,19 @@ if (game_state == "instructions") {
   draw_text_transformed(gw * 0.5, gh * 0.42, "Push your rival off the disk. Best of 5 rounds.", 1.15, 1.15, 0);
 
   draw_set_color(c_blue);
-  draw_text_transformed(gw * 0.5, gh * 0.52, "P1 — Move: WASD   Shove: F", 1.25, 1.25, 0);
+  draw_text_transformed(gw * 0.5, gh * 0.50, "P1 — Move: WASD   Shove: F (in front of you)", 1.15, 1.15, 0);
 
   draw_set_color(c_red);
-  draw_text_transformed(gw * 0.5, gh * 0.60, "P2 — Move: Arrows   Shove: L", 1.25, 1.25, 0);
+  draw_text_transformed(gw * 0.5, gh * 0.58, "P2 — Move: Arrows   Shove: L (in front of you)", 1.15, 1.15, 0);
 
   draw_set_color(make_color_rgb(200, 200, 210));
-  draw_text_transformed(gw * 0.5, gh * 0.72, "ESC pauses during a round.", 1.05, 1.05, 0);
+  draw_text_transformed(gw * 0.5, gh * 0.68, "Bodies collide on the ring — shove only hits ahead.", 1.05, 1.05, 0);
+
+  draw_set_color(make_color_rgb(200, 200, 210));
+  draw_text_transformed(gw * 0.5, gh * 0.76, "ESC pauses during a round.", 1.05, 1.05, 0);
 
   draw_set_color(c_yellow);
-  draw_text_transformed(gw * 0.5, gh * 0.84, "Press SPACE or ENTER to start", 1.35, 1.35, 0);
+  draw_text_transformed(gw * 0.5, gh * 0.88, "Press SPACE or ENTER to start", 1.35, 1.35, 0);
 }
 
 draw_set_alpha(1);

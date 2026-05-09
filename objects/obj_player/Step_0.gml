@@ -68,7 +68,10 @@ if (key_shove && shove_cooldown == 0) {
   }
 
   if (opponent != noone) {
-    if (point_distance(x, y, opponent.x, opponent.y) <= shove_range) {
+    var dist_o = point_distance(x, y, opponent.x, opponent.y);
+    var toward_opp = point_direction(x, y, opponent.x, opponent.y);
+    var in_arc = abs(angle_difference(face_angle, toward_opp)) <= shove_cone_half;
+    if (dist_o <= shove_range && in_arc) {
       opponent.spd_x += lengthdir_x(knockback_force, face_angle);
       opponent.spd_y += lengthdir_y(knockback_force, face_angle);
       opponent.hit_pulse_timer = 14;
