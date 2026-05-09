@@ -143,9 +143,13 @@ if (playing && !is_dead) {
   trail_phase++;
   if (trail_phase >= 3) {
     trail_phase = 0;
-    if (point_distance(0, 0, spd_x, spd_y) > 2) {
-      var t = instance_create_layer(x, y, "Instances", obj_trail_particle);
-      t.trail_color = (sumo_slot == 1) ? c_blue : c_red;
+    var _trails = !variable_global_exists("sumo_trails") || global.sumo_trails;
+    var _vm = point_distance(0, 0, spd_x, spd_y);
+    if (_trails && _vm > 0.65) {
+      var _tx = x - (spd_x / _vm) * 18;
+      var _ty = y - (spd_y / _vm) * 18;
+      var t = instance_create_layer(_tx, _ty, "Instances", obj_trail_particle);
+      t.trail_color = (sumo_slot == 1) ? make_color_rgb(120, 185, 255) : make_color_rgb(255, 130, 130);
     }
   }
 }

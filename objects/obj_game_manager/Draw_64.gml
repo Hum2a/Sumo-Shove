@@ -181,8 +181,48 @@ if (game_state == "paused") {
   draw_set_halign(fa_center);
   draw_set_valign(fa_middle);
   draw_set_color(c_white);
-  draw_text_transformed(gw * 0.5, gh * 0.46, "PAUSED", 3, 3, 0);
-  draw_text_transformed(gw * 0.5, gh * 0.58, "Press ESC to resume", 1.4, 1.4, 0);
+  draw_text_transformed(gw * 0.5, gh * 0.44, "PAUSED", 3, 3, 0);
+  draw_text_transformed(gw * 0.5, gh * 0.54, "Space / Enter — resume", 1.35, 1.35, 0);
+  draw_text_transformed(gw * 0.5, gh * 0.62, "Esc — main menu", 1.35, 1.35, 0);
+}
+
+// Saved settings (volume / trails / match) — drawn late so it stays legible when paused
+if (game_state != "instructions") {
+  var _sc = 0.72;
+  var _lh = 15 * _sc;
+  var _tx = 12;
+  var _ty = gh - 10;
+  draw_set_halign(fa_left);
+  draw_set_valign(fa_bottom);
+  draw_set_color(make_color_rgb(185, 195, 215));
+  draw_text_transformed(_tx, _ty, "Saved settings", _sc, _sc, 0);
+  _ty -= _lh;
+  var _shk = variable_global_exists("sumo_screen_shake") ? global.sumo_screen_shake : 1;
+  draw_set_color(make_color_rgb(165, 175, 200));
+  draw_text_transformed(
+    _tx,
+    _ty,
+    "Mst " + string(round(global.sumo_master_vol * 100)) + "% · Sfx " + string(round(global.sumo_sfx_vol * 100)) + "% · Shake " + string(round(_shk * 100)) + "%",
+    _sc,
+    _sc,
+    0
+  );
+  _ty -= _lh;
+  var _tr = (!variable_global_exists("sumo_trails") || global.sumo_trails) ? "ON" : "OFF";
+  var _in = (!variable_global_exists("sumo_show_instructions") || global.sumo_show_instructions) ? "ON" : "OFF";
+  draw_text_transformed(_tx, _ty, "Trails " + _tr + " · Intro overlay " + _in, _sc, _sc, 0);
+  _ty -= _lh;
+  draw_text_transformed(
+    _tx,
+    _ty,
+    "Series first to " + string(wins_needed) + " · Max " + string(max_rounds) + " rounds",
+    _sc,
+    _sc,
+    0
+  );
+  _ty -= _lh;
+  var _stg = variable_global_exists("sumo_stage_index") ? clamp(global.sumo_stage_index, 0, sumo_stage_count() - 1) : 0;
+  draw_text_transformed(_tx, _ty, "Stage: " + sumo_stage_name(_stg), _sc, _sc, 0);
 }
 
 if (game_state == "instructions") {
@@ -212,7 +252,7 @@ if (game_state == "instructions") {
   draw_text_transformed(gw * 0.5, gh * 0.74, "Bodies collide — shoves only land in front of you.", 1.05, 1.05, 0);
 
   draw_set_color(make_color_rgb(200, 200, 210));
-  draw_text_transformed(gw * 0.5, gh * 0.82, "ESC pauses during a round.", 1.05, 1.05, 0);
+  draw_text_transformed(gw * 0.5, gh * 0.82, "ESC pauses · paused: Esc menu · Space resume.", 1.05, 1.05, 0);
 
   draw_set_color(c_yellow);
   draw_text_transformed(gw * 0.5, gh * 0.92, "Press SPACE or ENTER to start", 1.35, 1.35, 0);

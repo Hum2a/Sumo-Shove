@@ -22,7 +22,21 @@ if (game_state == "double_ko") {
   exit;
 }
 
-// --- Pause (Stage C): ESC ---
+// --- Pause: ESC opens pause; paused ESC → main menu; Space/Enter resumes ---
+if (game_state == "paused") {
+  if (keyboard_check_pressed(vk_escape)) {
+    sumo_settings_save();
+    room_goto(room_menu);
+    exit;
+  }
+  if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter)) {
+    game_state = paused_prev_state;
+    sfx_try("snd_sumo_ui_confirm");
+    exit;
+  }
+  exit;
+}
+
 if (keyboard_check_pressed(vk_escape)) {
   if (game_state == "playing") {
     paused_prev_state = "playing";
@@ -30,15 +44,6 @@ if (keyboard_check_pressed(vk_escape)) {
     sfx_try("snd_sumo_pause");
     exit;
   }
-  if (game_state == "paused") {
-    game_state = paused_prev_state;
-    sfx_try("snd_sumo_ui_confirm");
-    exit;
-  }
-}
-
-if (game_state == "paused") {
-  exit;
 }
 
 var cam = view_camera[0];

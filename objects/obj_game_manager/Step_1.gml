@@ -21,7 +21,7 @@ with (obj_player) {
   shove_cooldown = 0;
 }
 
-if (!controls_intro_done) {
+if (!controls_intro_done && global.sumo_show_instructions) {
   game_state = "instructions";
 } else {
   countdown_value = 3;

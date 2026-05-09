@@ -67,6 +67,18 @@ shove_knockback_max_mult = 5.25;
 shove_knockback_charge_curve = 1.45;
 shove_charge_slow_max = 0.58;
 
+// --- Per-slot fighter stats (menu → persisted globals; defaults match tuning above) ---
+if (variable_global_exists("sumo_fp_max_speed")) {
+  var _fi = clamp(sumo_slot - 1, 0, 1);
+  max_speed = global.sumo_fp_max_speed[_fi];
+  move_force = global.sumo_fp_move_force[_fi];
+  shove_force = global.sumo_fp_shove_force[_fi];
+  shove_range = global.sumo_fp_shove_range[_fi];
+  knockback_force = global.sumo_fp_knockback[_fi];
+  friction_amount = global.sumo_fp_friction[_fi];
+  shove_cooldown_max = global.sumo_fp_shove_cd[_fi];
+}
+
 // --- State (dead players ignore input after falling off) ---
 is_dead = false;
 

@@ -19,6 +19,8 @@
   },
   "name":"Sumo Shove",
   "resources":[
+    {"id":{"name":"obj_main_menu","path":"objects/obj_main_menu/obj_main_menu.yy",},},
+    {"id":{"name":"scr_sumo_settings","path":"scripts/scr_sumo_settings/scr_sumo_settings.yy",},},
     {"id":{"name":"obj_game_manager","path":"objects/obj_game_manager/obj_game_manager.yy",},},
     {"id":{"name":"obj_platform","path":"objects/obj_platform/obj_platform.yy",},},
     {"id":{"name":"obj_player","path":"objects/obj_player/obj_player.yy",},},
@@ -27,6 +29,7 @@
     {"id":{"name":"obj_trail_particle","path":"objects/obj_trail_particle/obj_trail_particle.yy",},},
     {"id":{"name":"Object7","path":"objects/Object7/Object7.yy",},},
     {"id":{"name":"room_game","path":"rooms/room_game/room_game.yy",},},
+    {"id":{"name":"room_menu","path":"rooms/room_menu/room_menu.yy",},},
     {"id":{"name":"room_score","path":"rooms/room_score/room_score.yy",},},
     {"id":{"name":"snd_sumo_double_ko","path":"sounds/snd_sumo_double_ko/snd_sumo_double_ko.yy",},},
     {"id":{"name":"snd_sumo_fall","path":"sounds/snd_sumo_fall/snd_sumo_fall.yy",},},
@@ -47,6 +50,7 @@
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
+    {"roomId":{"name":"room_menu","path":"rooms/room_menu/room_menu.yy",},},
     {"roomId":{"name":"room_game","path":"rooms/room_game/room_game.yy",},},
     {"roomId":{"name":"room_score","path":"rooms/room_score/room_score.yy",},},
   ],

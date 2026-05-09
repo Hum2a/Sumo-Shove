@@ -18,10 +18,10 @@ draw_text_transformed(cx, title_y, "Player " + string(winner) + " Wins!", 2.4, 2
 draw_set_color(c_white);
 draw_text_transformed(cx, title_y + 90, string(p1_score) + "   –   " + string(p2_score), 2, 2, 0);
 
-var wins_needed = 3;
+var _wn = variable_global_exists("sumo_wins_needed") ? global.sumo_wins_needed : 3;
 var pip_y = title_y + 170;
 
-for (var i = 0; i < wins_needed; i++) {
+for (var i = 0; i < _wn; i++) {
   var cx1 = cx - 140 + i * 28;
   draw_set_color(c_blue);
   if (i < p1_score) {
@@ -31,7 +31,7 @@ for (var i = 0; i < wins_needed; i++) {
   }
 }
 
-for (var j = 0; j < wins_needed; j++) {
+for (var j = 0; j < _wn; j++) {
   var cx2 = cx + 60 + j * 28;
   draw_set_color(c_red);
   if (j < p2_score) {
@@ -42,7 +42,7 @@ for (var j = 0; j < wins_needed; j++) {
 }
 
 draw_set_color(make_color_rgb(200, 200, 200));
-draw_text_transformed(cx, room_height - 96, "Press ENTER or SPACE to rematch", 1.2, 1.2, 0);
+draw_text_transformed(cx, room_height - 96, "Press ENTER or SPACE for main menu", 1.2, 1.2, 0);
 
 draw_set_alpha(1);
 draw_set_color(c_white);
